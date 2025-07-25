@@ -10,11 +10,12 @@ const UserAllTodo = () => {
 
   
   const email = localStorage.getItem("userEmail");
+  const token = localStorage.getItem('userToken');
 
 
   const fetchUserTodos = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/user/todos?email=${email}`);
+      const res = await axios.get(`http://localhost:3000/api/user/todos` , {headers : {token}});
       setTodos(res.data.todos || []);
       setLoading(false);
     } catch (err) {
@@ -28,10 +29,11 @@ const UserAllTodo = () => {
   try {
     const res = await axios.post("http://localhost:3000/api/delete", {
       id: id
-    });
+    }, {headers : {token}});
 
     if (res.data.success) {
       alert("Todo deleted successfully");
+      fetchUserTodos()
     } else {
       alert("Failed to delete todo");
     }
@@ -47,7 +49,7 @@ const UserAllTodo = () => {
   }, []);
 
 
-  const token = localStorage.getItem('userToken');
+  
   
      if (!token) {
       return <Navigate to="/user/login" replace />;

@@ -6,7 +6,7 @@ const AdminNavbar = () => {
     <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
       <h1 className="text-xl font-bold">Admin</h1>
       <div className="space-x-4">
-        <Link to="/admin/createtodo" className="hover:underline">Create todo</Link>
+        {/* <Link to="/admin/createtodo" className="hover:underline">Create todo</Link> */}
         <Link to="/admin/alltodo" className="hover:underline">All todo</Link>
         <Link to="/admin/alluser" className="hover:underline">All user</Link>
         <button

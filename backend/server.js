@@ -18,6 +18,70 @@ app.use(cors())
 
 
 
+
+// auth middleware 
+
+const vefyadmintoken = (req, res, next) =>{
+  const authheader = req.headers.token;
+
+
+  if(!authheader){
+    return res.json({message : "Unauthorized: No token provided"})
+  }
+
+  try {
+    const decodetoken = jwt.verify(authheader, "shhhhhhhhhh");
+    if(decodetoken.role !== "admin"){
+      return res.json({message : "not admin"})
+    }
+    // console.log(decodetoken);
+    
+    req.admin = decodetoken;
+
+    next()
+    
+  } catch (error) {
+    return res.json({message: "somthing went wrong"})
+  }
+
+  
+}
+
+const verifyUserToken = async (req, res, next) => {
+  const token = req.headers.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, "shhhhhhhhhh");
+    //check if user exist in db by email or Id
+
+    const existinguser = await user.findOne({email: decoded.email});
+
+    if(!existinguser){
+      return res.json({message:"user not found"})
+    }
+
+
+    // Attach decoded user info to req.user
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
+
+
+
+
+
+
+
+// routes and apis  --------------------------------
+
 app.get('/',(req,res) =>{
     res.end("hello")
 })
@@ -46,6 +110,79 @@ app.post('/api/admin/login',(req, res) => {
 });
 
 
+
+// get all todo
+app.get("/api/todos",vefyadmintoken, async (req, res) => {
+  try {
+    // console.log(req.admin);
+
+    if(req.admin.email !== 'admin@e.com'){
+      return res.json({message:"some thing went wrong"})
+
+    }
+    
+    const todos = await todomodel.find();
+    res.json({ todos });
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    res.status(500).json({ message: "Failed to fetch todos" });
+  }
+});
+
+
+
+// add toto by admin
+// app.post("/api/add/admin", async (req, res) => {
+//   const { title, email , type } = req.body;
+
+//   if (!title || !email || !type) {
+//     return res.status(400).json({ message: 'Title and Email are required' });
+//   }
+
+//   try {
+//     const newTodo = new todomodel({ title, email ,type});
+//     await newTodo.save();
+//     res.json({ message: 'Todo created successfully', todo: newTodo });
+//   } catch (error) {
+//     console.error('Error creating todo:', error);
+//     res.status(500).json({ message: 'Failed to create todo' });
+//   }
+// });
+
+
+
+// get all user for admin 
+app.get("/api/user",vefyadmintoken, async (req, res) => {
+  if(req.admin.email !== 'admin@e.com'){
+      return res.json({message:"some thing went wrong"})
+
+    }
+
+  try {
+    const data = await user.find();
+    // console.log(data);
+    // console.log(req.admin);
+    // console.log('hi');
+    
+    
+    
+    res.json({ data });
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    res.status(500).json({ message: "Failed to fetch todos" });
+  }
+});
+
+
+
+
+
+
+
+
+// user apis----------------------------------------
+
+
 // user register
 app.post("/api/user/register", async (req, res) => {
   try {
@@ -67,8 +204,13 @@ app.post("/api/user/register", async (req, res) => {
 });
 
 
+
+
+
 // app login 
 app.post("/api/user/login", async (req, res) => {
+  
+  
   try {
     const { email, password } = req.body;
     // console.log(req.body);
@@ -84,7 +226,6 @@ app.post("/api/user/login", async (req, res) => {
     
 
 
-    
 
     const token = jwt.sign({ id: userr._id, email: userr.email }, 'shhhhhhhhhh');
 
@@ -95,8 +236,8 @@ app.post("/api/user/login", async (req, res) => {
 });
 
 
-//add todo user 
-app.post("/api/add/user", async (req, res) => {
+//add todo  by user 
+app.post("/api/add/user",verifyUserToken, async (req, res) => {
   const { title, email , type } = req.body;
 
   if (!title || !email || !type) {
@@ -115,64 +256,20 @@ app.post("/api/add/user", async (req, res) => {
 
 
 
-// add toto by admin
-app.post("/api/add/admin", async (req, res) => {
-  const { title, email , type } = req.body;
 
-  if (!title || !email || !type) {
-    return res.status(400).json({ message: 'Title and Email are required' });
-  }
-
+// GET /api/todos
+app.get("/api/user/todos",verifyUserToken ,async (req, res) => {
+  // console.log(req.user);
   try {
-    const newTodo = new todomodel({ title, email ,type});
-    await newTodo.save();
-    res.json({ message: 'Todo created successfully', todo: newTodo });
-  } catch (error) {
-    console.error('Error creating todo:', error);
-    res.status(500).json({ message: 'Failed to create todo' });
-  }
-});
-
-
-
-// get all user for admin 
-app.get("/api/user", async (req, res) => {
-  try {
-    const data = await user.find();
-    console.log(data);
-    
-    res.json({ data });
-  } catch (error) {
-    console.error("Error fetching todos:", error);
-    res.status(500).json({ message: "Failed to fetch todos" });
-  }
-});
-
-
-
-// get all todo
-app.get("/api/todos", async (req, res) => {
-  try {
-    const todos = await todomodel.find();
-    res.json({ todos });
-  } catch (error) {
-    console.error("Error fetching todos:", error);
-    res.status(500).json({ message: "Failed to fetch todos" });
-  }
-});
-
-
-// GET /api/todos?email=user@example.com
-app.get("/api/user/todos", async (req, res) => {
-  try {
-    const { email } = req.query;
-    console.log(email);
+    // const { email } = req.query;
+    const email = req.user.email
+    // console.log(email);
     
 
     const filter = email ? { email } : {};
 
     const todos = await todomodel.find(filter);
-    console.log(todos);
+    // console.log(todos);
     
     res.json({ todos });
   } catch (error) {
@@ -183,23 +280,37 @@ app.get("/api/user/todos", async (req, res) => {
 
 
 
-// delete todo 
+// delete todo authenticatino inside callback 
 app.post('/api/delete', async (req, res) => {
   const { id } = req.body;
+  const token = req.headers.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
 
   try {
-    const deleted = await todomodel.findByIdAndDelete(id);
+    const decode = jwt.verify(token, "shhhhhhhhhh");
 
-    if (!deleted) {
-      return res.json({ success: false, message: 'Todo not found' });
+    const todo = await todomodel.findById(id);
+    if (!todo) {
+      return res.status(404).json({ success: false, message: 'Todo not found' });
     }
 
-    res.json({ success: true, message: 'Todo deleted successfully' });
+    // Check if admin or the owner of the todo
+    if (decode.email === 'admin@e.com' || decode.email === todo.email) {
+      await todo.deleteOne();
+      return res.json({ success: true, message: 'Todo deleted successfully' });
+    } else {
+      return res.status(403).json({ message: "Unauthorized to delete this todo" });
+    }
+
   } catch (error) {
     console.error('Error deleting todo:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
-})
+});
+
 
 
 // EDIT todo 

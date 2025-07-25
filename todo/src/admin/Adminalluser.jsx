@@ -12,7 +12,7 @@ const AdminAlluser = () => {
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/user");
+      const res = await axios.get("http://localhost:3000/api/user",{headers :{token}});
       setalltodo(res.data.data || []);
       setLoading(false);
     } catch (err) {

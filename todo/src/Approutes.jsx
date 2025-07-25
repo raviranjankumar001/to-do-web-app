@@ -25,7 +25,7 @@ const AppRouteWrapper = () => {
       <Route path="/admin/home" element={<Adminhome />} />
       <Route path="/user/home" element={<Userhome />} />
       <Route path="/user/createtodo" element={<Createtodo />} />
-      <Route path="/admin/createtodo" element={<AdminCreatetodo />} />
+      {/* <Route path="/admin/createtodo" element={<AdminCreatetodo />} /> */}
       <Route path="/admin/alltodo" element={<AdminAllTodo />} />
       <Route path="/user/alltodo" element={<UserAllTodo />} />
       <Route path="/admin/alluser" element={<AdminAlluser />} />

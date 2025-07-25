@@ -11,14 +11,14 @@ const Createtodo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const email = localStorage.getItem("userEmail") || "test@example.com";
+    const email = localStorage.getItem("userEmail") ;
 
     try {
       const res = await axios.post(`http://localhost:3000/api/add/user`, {
         title,
         type,
         email,
-      });
+      },{headers :{token}});
 
       alert("Todo added!");
       setTitle("");

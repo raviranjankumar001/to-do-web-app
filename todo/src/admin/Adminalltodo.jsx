@@ -11,7 +11,7 @@ const AdminAllTodo = () => {
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/todos");
+      const res = await axios.get("http://localhost:3000/api/todos",{headers :{token}});
       setTodos(res.data.todos || []);
       setLoading(false);
     } catch (err) {
@@ -27,11 +27,12 @@ const AdminAllTodo = () => {
   try {
     const res = await axios.post("http://localhost:3000/api/delete", {
       id: id
-    });
+    },{headers : {token}});
 
     
     if (res.data.success) {
       alert("Todo deleted successfully");
+      fetchTodos()
     } else {
       alert("Failed to delete todo");
     }

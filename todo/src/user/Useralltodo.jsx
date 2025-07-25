@@ -73,7 +73,7 @@ const UserAllTodo = () => {
                   <td className="px-4 py-2 border">{index + 1}</td>
                   <td className="px-4 py-2 border">{todo.title}</td>
                   <td className="px-4 py-2 border">{todo.type}</td>
-                   <td className="px-4 py-2 border"><span className="text-red-500 cursor-pointer" onClick={() =>{
+                   <td className="px-4 py-2 border"><span className="text-red-500 cursor-pointer hover:bg-red-600 hover:text-white p-2 rounded-md" onClick={() =>{
                     deletetodo(todo._id)
 
                   }}>DELETE</span></td>

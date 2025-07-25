@@ -25,7 +25,8 @@ const UserRegister = () => {
         setPassword('');
       }
 
-      alert("account is createted")
+      alert("account is createted");
+      alert("now go to login page for login")
     } catch (error) {
       setMessage('Registration failed. Please try again.');
       console.error(error);

@@ -57,6 +57,14 @@ This app includes login, register, todo creation, and listing with separate func
 
 ---
 
+
+# mongoDB atlas
+
+In this project mongoDb atlas is used for store data data store in cloude 
+
+---
+
+
 ## 🛠️ Tech Stack
 
 - **Frontend:** React, Tailwind CSS (or Bootstrap)

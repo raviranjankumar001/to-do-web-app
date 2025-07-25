@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import UserNavbar from "./Usernavbar";
+import { Navigate } from 'react-router-dom';
+
 
 const Createtodo = () => {
   const [title, setTitle] = useState("");
@@ -26,6 +28,12 @@ const Createtodo = () => {
       alert("Failed to add todo");
     }
   };
+
+   const token = localStorage.getItem('userToken');
+    
+       if (!token) {
+        return <Navigate to="/user/login" replace />;
+      }
 
   return (
     <div>

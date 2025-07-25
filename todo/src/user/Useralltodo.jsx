@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UserNavbar from "./Usernavbar";
+import { Navigate } from 'react-router-dom';
+
 
 const UserAllTodo = () => {
   const [todos, setTodos] = useState([]);
@@ -43,6 +45,13 @@ const UserAllTodo = () => {
   useEffect(() => {
     fetchUserTodos();
   }, []);
+
+
+  const token = localStorage.getItem('userToken');
+  
+     if (!token) {
+      return <Navigate to="/user/login" replace />;
+    }
 
   
   return (

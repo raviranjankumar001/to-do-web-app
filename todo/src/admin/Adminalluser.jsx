@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavbar from "./AdminNavbar";
+import { Navigate } from 'react-router-dom';
+
 
 const AdminAlluser = () => {
   const [alluser, setalltodo] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const token = localStorage.getItem('adminToken');
 
   const fetchTodos = async () => {
     try {
@@ -25,6 +29,10 @@ const AdminAlluser = () => {
   useEffect(() => {
     fetchTodos();
   }, []);
+
+  if (!token) {
+    return <Navigate to="/admin/login" replace />;
+  }
 
   return (<>
   <AdminNavbar/>

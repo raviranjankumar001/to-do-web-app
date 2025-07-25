@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import AdminNavbar from "./AdminNavbar";
+import { Navigate } from 'react-router-dom';
 
 const AdminCreatetodo = () => {
   const [title, setTitle] = useState('');
@@ -31,6 +32,12 @@ const AdminCreatetodo = () => {
       alert('Failed to create todo');
     }
   };
+
+  const token = localStorage.getItem('adminToken');
+  
+    if (!token) {
+      return <Navigate to="/admin/login" replace />;
+    }
 
   return (
     <div>

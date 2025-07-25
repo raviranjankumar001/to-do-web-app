@@ -1,7 +1,14 @@
 import React from 'react';
 import AdminNavbar from './AdminNavbar';
+import { Navigate } from 'react-router-dom';
 
 const Adminhome = () => {
+  const token = localStorage.getItem('adminToken');
+
+  if (!token) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
   return (
     <div>
       <AdminNavbar />

@@ -1,7 +1,15 @@
 import React from 'react';
 import UserNavbar from './Usernavbar';
+import { Navigate } from 'react-router-dom';
+
 
 const Userhome = () => {
+  const token = localStorage.getItem('userToken');
+
+   if (!token) {
+    return <Navigate to="/user/login" replace />;
+  }
+  
   return (
     <div>
       <UserNavbar/>
